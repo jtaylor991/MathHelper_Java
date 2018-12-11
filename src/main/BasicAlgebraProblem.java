@@ -1,3 +1,5 @@
+package main;
+
 import java.util.Random;
 
 public class BasicAlgebraProblem extends Problem{
@@ -130,6 +132,10 @@ public class BasicAlgebraProblem extends Problem{
             // always returning a value within the specified range
         	
         	// if negatives are included and the random int is on the bottom half of the range between min and max...
+			// BUG: This doesn't work. A range of 5 and 10 will never return a negative because max-min=min, which means the random can NEVER be less than max-min
+			// (max/min) rounded up doesn't work either because 10/5=2
+			// if random < (max/min)+min, then for a range of 5-10 it would return negative if the random int is less than 7 (but not including 7)
+			// this is kind of crappy logic though...it'll ALWAYS be negative in that case. randomize the negativity? random between 0 and 1 to emulate a coin flip?
         	if(includeNegatives && (random < (max - min))){
         		// ...return a negative
         			return (-1 * random);
