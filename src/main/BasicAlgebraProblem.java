@@ -2,7 +2,7 @@ package main;
 
 import java.util.Random;
 
-public class BasicAlgebraProblem extends Problem{
+public class BasicAlgebraProblem extends main.Problem {
 	
 	/*
 	 * Example problem: 4x - 5 = 15
@@ -111,18 +111,36 @@ public class BasicAlgebraProblem extends Problem{
 	public void setIncludeNegativesInRandInts(boolean includeNegatives) {
 		this.includeNegatives = includeNegatives;
 	}
+
+	private Boolean coinFlip()
+	{
+		Random rand = new Random(); // instance of Random
+
+		// if "heads"
+		if(rand.nextInt(2) == 1)
+		{
+			return true;
+		}
+		// if "tails"
+		else
+		{
+			return false;
+		}
+	}
 	
-	private int randInt(int min, int max, boolean includeNegatives) {
+	private Integer randInt(int min, int max, boolean includeNegatives) {
 		Random rand = new Random(); // instance of Random
 		
         try
         {
-        	if(min >= max){
+        	if(min >= max)
+        	{
         		throw new IllegalArgumentException(String.format("Could not generate randInt: min must be smaller than max.\nmin: %d\nmax: %d", min, max));
         	}
-        	else if(!(min > 0) || !(max > 0)){
-        		throw new IllegalArgumentException(String.format("Could not generate randInt: min and max must be greater than 0.\nmin: %d\nmax: %d", min, max));
-        	}
+        	else if ((min < 0) | (max < 0))
+        	{
+				throw new IllegalArgumentException(String.format("Could not generate randInt: min and max must be greater than 0.\nmin: %d\nmax: %d", min, max));
+			}
         	
         	int random = (rand.nextInt((max - min) + 1) + min);
         	// method nextInt of java.util.Random returns a random integer between 0 and the argument n (excluding n)
@@ -130,16 +148,14 @@ public class BasicAlgebraProblem extends Problem{
             // and the bottom of the range is added to that value, returning a value between 0 plus the bottom of the range (i.e. the bottom of the range obviously)
             // and a value no larger than the difference between the top and bottom values of the range, which gets added to the bottom/min value, 
             // always returning a value within the specified range
-        	
-        	// if negatives are included and the random int is on the bottom half of the range between min and max...
-			// BUG: This doesn't work. A range of 5 and 10 will never return a negative because max-min=min, which means the random can NEVER be less than max-min
-			// (max/min) rounded up doesn't work either because 10/5=2
-			// if random < (max/min)+min, then for a range of 5-10 it would return negative if the random int is less than 7 (but not including 7)
-			// this is kind of crappy logic though...it'll ALWAYS be negative in that case. randomize the negativity? random between 0 and 1 to emulate a coin flip?
-        	if(includeNegatives && (random < (max - min))){
-        		// ...return a negative
-        			return (-1 * random);
-        	}
+			// for example: rand.nextInt((10 - 5) + 1) + 5) = 11
+
+			// randomly choose if the random integer returned will be negative
+			// but ONLY if negatives are set to be included and the coin flip returns true
+			if (includeNegatives & coinFlip())
+			{
+				return (-1 * random);
+			}
         	else
         	{
                 return random;
@@ -149,8 +165,8 @@ public class BasicAlgebraProblem extends Problem{
         {
             System.out.printf("Could not generate randInt\n%s", e);
             // TODO proper error logger
+
+			return (Integer) null;
         }
-        
-        return (Integer) null;
 	}
 }
